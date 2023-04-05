@@ -20,7 +20,7 @@ def get_pieces():
 @app.route('/pieces', methods=['POST'])
 def save_piece():
      new_piece = request.json
-     new_id = uuid.uuid4()
+     new_id = str(uuid.uuid4())
      pieces[new_id] = new_piece
 
      return jsonify({'id': new_id}), 201
