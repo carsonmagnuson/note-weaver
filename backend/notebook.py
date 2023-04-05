@@ -1,8 +1,10 @@
 from flask import Flask, jsonify
-from collections import defaultdict
+#from collections import defaultdict
+from flask_cors import CORS
 import uuid
 
 app = Flask(__name__)
+CORS(app)
 ex_maple_id = str(uuid.uuid4())
 
 
@@ -25,7 +27,6 @@ def save_piece():
      pieces[new_id] = new_piece
 
      return jsonify({'id': new_id}), 201
-
 
 @app.route('/pieces/<piece_id>', methods=['PUT'])
 def update_piece(piece_id):
