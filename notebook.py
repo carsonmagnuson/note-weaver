@@ -15,6 +15,7 @@ pieces = {ex_maple_id:{
           }
 @app.route('/pieces', methods=['GET'])
 def get_pieces():
+
     return jsonify(pieces)
 
 @app.route('/pieces', methods=['POST'])
@@ -25,6 +26,13 @@ def save_piece():
 
      return jsonify({'id': new_id}), 201
 
+
+@app.route('/pieces/<piece_id>', methods=['PUT'])
+def update_piece(piece_id):
+    updated_data = request.json 
+    pieces[piece_id].update(updated_data)
+    
+    return jsonify({"message": "piece updated"}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
