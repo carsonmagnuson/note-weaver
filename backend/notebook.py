@@ -1,14 +1,13 @@
-from flask import Flask, jsonify
+from flask import Flask, request
 #from collections import defaultdict
 from flask_cors import CORS
-import uuid
+import uuid, datetime
 
 app = Flask(__name__)
 CORS(app)
 # cors = CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
 ex_maple_id = str(uuid.uuid4())
-
 
 pieces = {ex_maple_id:{
     'type': 'quote',
@@ -18,20 +17,30 @@ pieces = {ex_maple_id:{
     'date': 'today'}
           }
 
-@app.route('/pieces', methods=['GET'])
-def get_pieces():
-
-    return jsonify(pieces)
-
-@app.route('/', methods=['POST'])
-def create_piece():
-    print('new piece detected')
-    new_piece = request.get_json()
+@app.route('/create', methods=['POST'])
+def create():        
     new_id = str(uuid.uuid4())
+    print(f'new id created at {new_id}')
+    print(request.data)
+    piece_type = request.json['type']
+    world = request.json['world']
+    content = request.json['content']
+    characters = request.json['characters']
+    date = str(datetime.datetime.now())
+    new_piece = {
+        'type': piece_type,
+        'world': world,
+        'content': content,
+        'characters': characters,
+        'date': date
+        }
     pieces[new_id] = new_piece
-    print(pieces)
+    return {'message': 'Piece saved successfully'}
 
-    return jsonify({'id': new_id}), 201
+@app.route('/get', methods=['GET'])
+def get():
+    print('retrieving pieces...')
+    return pieces
 
 @app.route('/pieces/<piece_id>', methods=['PUT'])
 def update_piece(piece_id):
@@ -41,4 +50,4 @@ def update_piece(piece_id):
     return jsonify({"message": "piece updated"}), 200
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

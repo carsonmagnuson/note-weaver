@@ -2,26 +2,24 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
 
-  const pieces = writable ({});
+  let pieces = {};
 
-  async function reload() {
-    const response = await fetch('http://localhost:5000/pieces', {mode: 'cors'});
-    const data = await response.json();
-    pieces.set(data)
-    console.log(pieces)
+  const burl = 'http://localhost:5000';
+  
+  async function get() {
+    const response = await fetch(`${burl}/get`);
+    pieces = await response.json()
+    console.log(pieces);
   }
   onMount(async() => {
-    reload()
+    get()
   })
 </script>
 
 <main>
-   
-  <button >reload</button>
+  <button on:click={get}>reload</button>
   <p>loaded</p>
-  {#each Object.keys($pieces) as key}
-    <div>{key} : {JSON.stringify($pieces[key])}</div>
-  {/each}
+  <pre>{JSON.stringify(pieces, null, 2)}</pre>
 </main>
 
 <style>

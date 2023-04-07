@@ -2,9 +2,20 @@ node_modules/
 
 npm-debug.log*
 
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
 .env.local 
+.DS_Store
+.cache
 
-.vscode/*.json
+.vscode/**/*.json
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -13,5 +24,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-dist/
-build/
+/frontend/note-weaver/dist/
+/frontend/note-weaver/build/
