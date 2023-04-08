@@ -17,15 +17,18 @@
     CHARACTERS:
     <input type='text' bind:value={characters} />
   </label>
-  <button on:click={save_piece}>SAVE PIECE</button>
+  <button on:click={() => save(type, world, characters, content)}>SAVE PIECE</button>
   <hr>
-  <button on:click={get_one}>GET PIECE</button>
+  <button on:click={delete_one}>DELETE PIECE</button>
 </main>
 
 
 <script>
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+
   export let data;
+
   let type = 'whatever';
   let world = 'world';
   let characters = 'et al.';
@@ -35,8 +38,8 @@
   const burl = 'http://localhost:5000';
 
   onMount(async() => {
-    get_one()
-  });
+    get_one();
+  })
 
   async function get_one() {
     const response = await fetch(`${burl}/pieces/${data.id}`);
@@ -70,8 +73,12 @@
 
   }
   
-  function save_piece() {
-    console.log('handled')
-    save(type, world, characters, content)
+  async function delete_one() {
+    const response = await fetch(`${burl}/pieces/${data.id}`, {
+      method: 'DELETE'
+    });
+    console.log(response)
+    goto('/pieces');
+    
   }
 </script>

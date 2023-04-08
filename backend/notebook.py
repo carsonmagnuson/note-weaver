@@ -40,7 +40,7 @@ def get_pieces():
     print('retrieving pieces...')
     return pieces
 
-@app.route('/pieces/<piece_id>', methods=['GET', 'PUT'])
+@app.route('/pieces/<piece_id>', methods=['GET', 'PUT', 'DELETE'])
 def modify_piece(piece_id):
     if request.method == 'GET':
         return pieces[piece_id]
@@ -54,6 +54,9 @@ def modify_piece(piece_id):
                 }
         pieces[piece_id] = updated_piece
         return {'message': 'piece updated'}, 200
+    elif request.method == 'DELETE':
+        del pieces[piece_id]
+        return {'message': 'piece deleted'}, 200
     else:
         return {"message": "error updating, wrong method"}, 404
 
