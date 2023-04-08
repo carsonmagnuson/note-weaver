@@ -20,34 +20,42 @@ pieces = {ex_maple_id:{
 @app.route('/create', methods=['POST'])
 def create():        
     new_id = str(uuid.uuid4())
-    print(f'new id created at {new_id}')
-    print(request.data)
-    piece_type = request.json['type']
-    world = request.json['world']
-    content = request.json['content']
-    characters = request.json['characters']
     date = str(datetime.datetime.now())
+
+    print(f'new id {new_id} created at {date}')
+
     new_piece = {
-        'type': piece_type,
-        'world': world,
-        'content': content,
-        'characters': characters,
-        'date': date
+        'date': date,
+        'type': request.json['type'],
+        'world': request.json['world'],
+        'content': request.json['content'],
+        'characters': request.json['characters'],
         }
+
     pieces[new_id] = new_piece
-    return {'message': 'Piece saved successfully'}
+    return {'message': 'piece saved successfully'}
 
 @app.route('/get', methods=['GET'])
-def get():
+def get_pieces():
     print('retrieving pieces...')
     return pieces
 
-@app.route('/pieces/<piece_id>', methods=['PUT'])
-def update_piece(piece_id):
-    updated_data = request.json 
-    pieces[piece_id].update(updated_data)
-    
-    return jsonify({"message": "piece updated"}), 200
+@app.route('/pieces/<piece_id>', methods=['GET', 'PUT'])
+def modify_piece(piece_id):
+    if request.method == 'GET':
+        return pieces[piece_id]
+    elif request.method == 'PUT':
+        updated_piece = {
+            'date': pieces[piece_id]['date'],
+            'type': request.json['type'],
+            'world': request.json['world'],
+            'content': request.json['content'],
+            'characters': request.json['characters'],
+                }
+        pieces[piece_id] = updated_piece
+        return {'message': 'piece updated'}, 200
+    else:
+        return {"message": "error updating, wrong method"}, 404
 
 if __name__ == "__main__":
     app.run()

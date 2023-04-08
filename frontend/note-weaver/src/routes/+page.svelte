@@ -3,7 +3,7 @@
     CONTENT:
     <textarea rows='4' bind:value={content}></textarea>
   </label>
-  <p>loaded</p>
+  <hr>
   <label>
     TYPE:
     <input type='text' bind:value={type} />
@@ -16,21 +16,20 @@
     CHARACTERS:
     <input type='text' bind:value={characters} />
   </label>
-  <button on:click={handleClick}>Save Piece</button>
+  <button on:click={save_piece}>Save Piece</button>
   <hr>
   <button on:click={get}>GET PIECES</button>
 </main>
 
 
 <script>
-//  import { Link } from 'sveltekit-navigator';
   let type = 'type';
   let world = 'world';
   let characters = 'et al.';
   let content = '';
 
   const burl = 'http://localhost:5000';
-  
+
   async function get() {
     const response = await fetch(`${burl}/get`);
     const data = await response.json()
@@ -51,12 +50,12 @@
       },
       body: JSON.stringify(piece)
     });
-    const data = await response.json()
-    console.log(data);
+    const res = await response.json()
+    console.log(res);
 
   }
   
-  function handleClick() {
+  function save_piece() {
     console.log('handled')
     save(type, world, characters, content)
   }
