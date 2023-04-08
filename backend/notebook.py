@@ -1,21 +1,35 @@
 from flask import Flask, request
-#from collections import defaultdict
 from flask_cors import CORS
-import uuid, datetime
+from dotenv import load_dotenv
+from pymongo import MongoClient
+import uuid, datetime, os
 
 app = Flask(__name__)
 CORS(app)
-# cors = CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
+
+load_dotenv()
+API_KEY = os.getenv('API_KEY')
+cluster = MongoClient(API_KEY) 
+print(f'cluster = {cluster}')
+pieces = cluster['noteweaves']['pieces']
+print(type(pieces))
+
 
 ex_maple_id = str(uuid.uuid4())
-
-pieces = {ex_maple_id:{
+test_pieces = {ex_maple_id:{
     'type': 'quote',
     'content': 'The man sat like a boulder in the rain, coiled beneath the gray sky.',
     'world': 'msc',
     'characters': 'NA', 
     'date': 'today'}
           }
+
+#load test Data
+print('attempting to insert one')
+print(test_pieces[ex_maple_id])
+pieces.insert_one(test_pieces)
+print(pieces)
+
 
 @app.route('/create', methods=['POST'])
 def create():        

@@ -1,5 +1,4 @@
 <script>
-  //add functionality for displaying each piece and a button to edit.
   import { onMount } from 'svelte';
 
   let pieces = {};
