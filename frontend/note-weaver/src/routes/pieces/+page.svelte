@@ -34,8 +34,8 @@
   <ul>
     {#each piece_ids as key, i}
       <li>
-        {pieces[key]['content']} |
-        <a href={`/pieces/${key}`}><button>Edit</button></a>
+        {pieces[key]['content']} --->
+        <a href={`/pieces/${key}`}><button>Edit</button></a> |
         <button on:click={() => delete_one(key)}>Delete</button>
       </li>
     {/each}
@@ -43,5 +43,5 @@
   
 </main>
 
-<style>
-</style>
+
+
