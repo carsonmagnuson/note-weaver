@@ -42,7 +42,7 @@
   })
 
   async function get_one() {
-    const response = await fetch(`${burl}/pieces/${data.id}`);
+    const response = await fetch(`${burl}/pieces/${data._id}`);
     const piece = await response.json()
     content = piece['content']
     type = piece['type']
@@ -59,7 +59,6 @@
       'world': world,
       'characters': characters,
       'content': content,
-      'date': created
     }
     const response = await fetch(`${burl}/pieces/${data.id}`, {
       method: 'PUT',

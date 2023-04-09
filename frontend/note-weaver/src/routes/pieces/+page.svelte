@@ -1,7 +1,8 @@
 <script>
   import { onMount } from 'svelte';
+  //import { ObjectId } from 'bson';
 
-  let pieces = {};
+  let pieces = [];
   let piece_ids = [];
 
   const burl = 'http://localhost:5000';
@@ -32,11 +33,11 @@
   <h1>PIECES</h1>
   <hr/>
   <ul>
-    {#each piece_ids as key, i}
+    {#each pieces as piece}
       <li>
-        {pieces[key]['content']} --->
-        <a href={`/pieces/${key}`}><button>Edit</button></a> |
-        <button on:click={() => delete_one(key)}>Delete</button>
+        {piece['content']} --->
+        <a href={`/pieces/${piece['_id']}`}><button>Edit</button></a> |
+        <button on:click={() => delete_one(piece['_id'])}>Delete</button>
       </li>
     {/each}
   </ul>

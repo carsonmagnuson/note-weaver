@@ -3,7 +3,11 @@ from flask import Flask, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from bson.objectid import ObjectId
+from bson import json_util
 import uuid, datetime, os
+
+from pymongo.mongo_client import _retryable_error_doc
 
 app = Flask(__name__)
 CORS(app)
@@ -14,31 +18,26 @@ cluster = MongoClient(API_KEY)
 print(f'cluster = {cluster}')
 pieces = cluster['noteweaves']['pieces']
 
-ex_maple_id = str(uuid.uuid4())
-test_pieces = {ex_maple_id:{
+test_pieces = {
     'type': 'quote',
     'content': 'The man sat like a boulder in the rain, coiled beneath the gray sky.',
     'world': 'msc',
     'characters': 'NA', 
-    'date': 'today'}
-          }
+    }
 
 #insert test Data
-#pieces.insert_one(test_pieces)
+pieces.insert_one(test_pieces)
+print(next(pieces.find())['_id'])
 
 @app.route('/create', methods=['POST'])
 def create():        
-    new_id = str(uuid.uuid4())
-    date = str(datetime.datetime.now())
-
-    print(f'new id {new_id} created at {date}')
-    new_piece = { new_id: {
-        'date': date,
+    print(f'new piece created at {date}')
+    new_piece = {
         'type': request.json['type'],
         'world': request.json['world'],
         'content': request.json['content'],
         'characters': request.json['characters']
-        }}
+        }
 
     pieces.insert_one(new_piece)
     return {'message': 'piece saved successfully'}
@@ -46,26 +45,26 @@ def create():
 @app.route('/get', methods=['GET'])
 def get_pieces():
     print('retrieving pieces...')
-    retrieved = defaultdict()
-    found = list(pieces.find())
+    found = list(pieces.find({}))
     for piece in found:
-        keys = list(piece.keys())
-        key = max(keys, key=lambda x: len(x))
-        retrieved[key] = piece[key]
-    return retrieved
+        piece['_id'] = str(piece['_id'])
+    # found = json_util.dumps(found) 
+
+    return found
 
 @app.route('/pieces/<piece_id>', methods=['GET', 'PUT', 'DELETE'])
 def modify_piece(piece_id):
     if request.method == 'GET':
-        returnable = pieces.find_one({piece_id: {'$exists': True}})
-        return returnable[piece_id]    
+        returnable = pieces.find_one({'_id': ObjectId(piece_id)})
+        returnable['_id'] = str(returnable['id'])
+        return json_util.dumps(returnable) 
+
     elif request.method == 'PUT':
         update = {'$set': {
-            f'{piece_id}.date': pieces.find_one({piece_id: {'$exists': True}})[piece_id]['date'],
-            f'{piece_id}.type': request.json['type'],
-            f'{piece_id}.world': request.json['world'],
-            f'{piece_id}.content': request.json['content'],
-            f'{piece_id}.characters': request.json['characters']
+            f'type': request.json['type'],
+            f'world': request.json['world'],
+            f'content': request.json['content'],
+            f'characters': request.json['characters']
                 }}
         pieces.update_one({piece_id: {'$exists': True}}, update)
         return {'message': 'piece updated'}, 200
