@@ -13,8 +13,8 @@ app = Flask(__name__)
 CORS(app)
 
 load_dotenv()
-API_KEY = os.getenv('API_KEY')
-cluster = MongoClient(API_KEY) 
+MONGO_KEY= os.getenv('MONGO_KEY')
+cluster = MongoClient(MONGO_KEY) 
 print(f'cluster = {cluster}')
 pieces = cluster['noteweaves']['pieces']
 
