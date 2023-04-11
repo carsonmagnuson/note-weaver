@@ -42,7 +42,7 @@
   })
 
   async function get_one() {
-    const response = await fetch(`${burl}/pieces/${data._id}`);
+    const response = await fetch(`${burl}/pieces/${data.id}`);
     const piece = await response.json()
     content = piece['content']
     type = piece['type']
@@ -69,6 +69,7 @@
     });
     const log = await response.json()
     console.log(log);
+    goto('/pieces')
 
   }
   

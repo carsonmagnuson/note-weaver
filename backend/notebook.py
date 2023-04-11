@@ -54,9 +54,10 @@ def get_pieces():
 
 @app.route('/pieces/<piece_id>', methods=['GET', 'PUT', 'DELETE'])
 def modify_piece(piece_id):
+    print(f'{piece_id} is piece id')
     if request.method == 'GET':
         returnable = pieces.find_one({'_id': ObjectId(piece_id)})
-        returnable['_id'] = str(returnable['id'])
+        returnable['_id'] = str(returnable['_id'])
         return json_util.dumps(returnable) 
 
     elif request.method == 'PUT':
@@ -66,10 +67,10 @@ def modify_piece(piece_id):
             f'content': request.json['content'],
             f'characters': request.json['characters']
                 }}
-        pieces.update_one({piece_id: {'$exists': True}}, update)
+        pieces.update_one({'_id': ObjectId(piece_id)}, update)
         return {'message': 'piece updated'}, 200
     elif request.method == 'DELETE':
-        pieces.delete_one({piece_id: {'$exists': True}})
+        pieces.delete_one({'_id': ObjectId(piece_id)})
         return {'message': 'piece deleted'}, 200
     else:
         return {"message": "error updating, wrong method"}, 404
